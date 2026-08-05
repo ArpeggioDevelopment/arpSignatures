@@ -8,6 +8,7 @@ import com.google.inject.Inject
 import com.google.inject.Injector
 import dev.rollczi.litecommands.LiteCommands
 import dev.rollczi.litecommands.bukkit.LiteBukkitFactory
+import dev.rollczi.litecommands.folia.FoliaExtension
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -18,19 +19,28 @@ class CommandService @Inject constructor(
     private lateinit var liteCommands: LiteCommands<CommandSender>
 
     fun registerCommands() {
-        liteCommands = LiteBukkitFactory.builder(plugin)
+        val builder = LiteBukkitFactory.builder(plugin)
             .commands(
                 injector.getInstance(SignCommand::class.java),
                 injector.getInstance(ReloadCommand::class.java)
             )
             .invalidUsage(injector.getInstance(DefaultInvalidUsageHandler::class.java))
             .missingPermission(injector.getInstance(DefaultMissingPermissionHandler::class.java))
-            .build()
+
+        if (isFolia) builder.extension(FoliaExtension(plugin))
+
+        liteCommands = builder.build()
     }
 
     fun unregisterCommands() {
         if (::liteCommands.isInitialized) {
             liteCommands.unregister()
         }
+    }
+
+    val isFolia: Boolean by lazy {
+        runCatching {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer")
+        }.isSuccess
     }
 }

@@ -21,6 +21,7 @@ dependencies {
 
     implementation(libs.litecommands.bukkit)
     implementation(libs.litecommands.adventure)
+    implementation(libs.litecommands.folia)
 
     implementation(libs.okaeri.configs.yaml.bukkit)
 

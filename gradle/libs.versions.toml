@@ -18,6 +18,7 @@ paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paper-api" }
 
 litecommands-bukkit = { module = "dev.rollczi:litecommands-bukkit", version.ref = "litecommands" }
 litecommands-adventure = { module = "dev.rollczi:litecommands-adventure", version.ref = "litecommands" }
+litecommands-folia = { module = "dev.rollczi:litecommands-folia", version.ref = "litecommands" }
 
 okaeri-configs-yaml-bukkit = { module = "eu.okaeri:okaeri-configs-yaml-bukkit", version.ref = "okaeri-configs" }
 
