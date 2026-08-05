@@ -5,3 +5,4 @@ website: https://github.com/ArpeggioDevelopment
 
 version: '${version}'
 api-version: 26.1.2
+folia-supported: true
