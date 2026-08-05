@@ -40,14 +40,8 @@ class GeneralConfig : OkaeriConfig() {
     class SignatureFilter : OkaeriConfig() {
         var mode = FilterMode.BLACKLIST
 
-        var words = mutableListOf(
-            "{",
-            "}"
-        )
-
-        var regexes = mutableListOf(
-            ""
-        )
+        var words: MutableList<String> = mutableListOf()
+        var regexes: MutableList<String> = mutableListOf()
     }
 
     enum class FilterMode {
