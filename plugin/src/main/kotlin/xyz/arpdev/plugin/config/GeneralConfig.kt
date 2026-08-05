@@ -24,7 +24,7 @@ class GeneralConfig : OkaeriConfig() {
         )
         var formats = linkedMapOf(
             "default" to "<white><signature> <dark_gray>(<gray><player>, <date></gray>)",
-            "arpsignatures.rainbow" to "<rainbow<signature> <gold>(<yellow><player>, <date></yellow>)",
+            "arpsignatures.rainbow" to "<rainbow><signature> <gold>(<yellow><player>, <date></yellow>)",
             "arpsignatures.svip" to "<aqua><signature> <dark_gray>(<gray><player>, <date></gray>)",
             "arpsignatures.vip" to "<yellow><signature> <dark_gray>(<gray><player>, <date></gray>)"
         )
