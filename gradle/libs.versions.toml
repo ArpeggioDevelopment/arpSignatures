@@ -1,0 +1,27 @@
+[versions]
+kotlin = "2.4.0"
+shadow = "9.6.1"
+
+paper-api = "26.2.build.+"
+litecommands = "3.10.9"
+okaeri-configs = "6.1.0-beta.4"
+multification = "1.2.4"
+guice = "7.0.0"
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+
+
+[libraries]
+paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paper-api" }
+
+litecommands-bukkit = { module = "dev.rollczi:litecommands-bukkit", version.ref = "litecommands" }
+litecommands-adventure = { module = "dev.rollczi:litecommands-adventure", version.ref = "litecommands" }
+
+okaeri-configs-yaml-bukkit = { module = "eu.okaeri:okaeri-configs-yaml-bukkit", version.ref = "okaeri-configs" }
+
+multification-paper = { module = "com.eternalcode:multification-paper", version.ref = "multification" }
+multification-okaeri = { module = "com.eternalcode:multification-okaeri", version.ref = "multification" }
+
+guice = { module = "com.google.inject:guice", version.ref = "guice" }
