@@ -1,0 +1,7 @@
+name: arpSignatures
+main: xyz.arpdev.plugin.SignaturesPlugin
+author: Arpeggio
+website: https://github.com/ArpeggioDevelopment
+
+version: '${version}'
+api-version: 26.1.2
