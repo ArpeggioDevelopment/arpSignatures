@@ -13,7 +13,7 @@ class MessagesConfig : OkaeriConfig() {
             .chat("<red>Usage: {USAGE}")
             .build()
         var noPermission: Notice = Notice.builder()
-            .chat("<red>You don't have permission to execute this command. ({PERMISSIONS)")
+            .chat("<red>You don't have permission to execute this command. ({PERMISSIONS})")
             .build()
         @Comment("{SIGNATURE}, {MIN}, {MAX}")
         var notInRange: Notice = Notice.builder()
