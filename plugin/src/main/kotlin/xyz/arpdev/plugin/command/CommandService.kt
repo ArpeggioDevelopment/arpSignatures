@@ -19,28 +19,20 @@ class CommandService @Inject constructor(
     private lateinit var liteCommands: LiteCommands<CommandSender>
 
     fun registerCommands() {
-        val builder = LiteBukkitFactory.builder(plugin)
+        liteCommands = LiteBukkitFactory.builder(plugin)
             .commands(
                 injector.getInstance(SignCommand::class.java),
                 injector.getInstance(ReloadCommand::class.java)
             )
+            .extension(FoliaExtension(plugin))
             .invalidUsage(injector.getInstance(DefaultInvalidUsageHandler::class.java))
             .missingPermission(injector.getInstance(DefaultMissingPermissionHandler::class.java))
-
-        if (isFolia) builder.extension(FoliaExtension(plugin))
-
-        liteCommands = builder.build()
+            .build()
     }
 
     fun unregisterCommands() {
         if (::liteCommands.isInitialized) {
             liteCommands.unregister()
         }
-    }
-
-    val isFolia: Boolean by lazy {
-        runCatching {
-            Class.forName("io.papermc.paper.threadedregions.RegionizedServer")
-        }.isSuccess
     }
 }
