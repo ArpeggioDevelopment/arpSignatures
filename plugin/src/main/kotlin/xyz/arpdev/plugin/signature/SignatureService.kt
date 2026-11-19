@@ -32,7 +32,7 @@ class SignatureService @Inject constructor(
     ): Boolean {
         val messages = config.messages.messages
 
-        when (val result = validator.validate(item, signature, config.general)) {
+        when (val result = validator.validate(item.type, signature, config.general)) {
             ValidationResult.Success -> return true
 
             is ValidationResult.Failure -> {
