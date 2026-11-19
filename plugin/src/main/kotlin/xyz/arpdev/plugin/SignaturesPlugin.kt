@@ -23,6 +23,8 @@ class SignaturesPlugin : JavaPlugin() {
     }
 
     override fun onDisable() {
-        commandService.unregisterCommands()
+        if (::commandService.isInitialized) {
+            commandService.unregisterCommands()
+        }
     }
 }
