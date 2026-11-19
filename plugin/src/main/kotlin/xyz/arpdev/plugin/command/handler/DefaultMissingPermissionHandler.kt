@@ -8,7 +8,6 @@ import dev.rollczi.litecommands.invocation.Invocation
 import dev.rollczi.litecommands.permission.MissingPermissions
 import dev.rollczi.litecommands.permission.MissingPermissionsHandler
 import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
 
 class DefaultMissingPermissionHandler @Inject constructor(
     private val configService: ConfigService,
@@ -16,17 +15,14 @@ class DefaultMissingPermissionHandler @Inject constructor(
 ) : MissingPermissionsHandler<CommandSender> {
 
     override fun handle(
-        invocation: Invocation<CommandSender?>?,
-        missingPermissions: MissingPermissions?,
-        chain: ResultHandlerChain<CommandSender?>?
+        invocation: Invocation<CommandSender>,
+        missingPermissions: MissingPermissions,
+        chain: ResultHandlerChain<CommandSender>
     ) {
-        val sender = invocation?.sender()
-        if (sender !is Player) return
-
         multification.notify(
-            sender,
+            invocation.sender(),
             configService.current.messages.messages.noPermission,
-            "{PERMISSIONS}" to (missingPermissions?.asJoinedText(", ") ?: "")
+            "{PERMISSIONS}" to missingPermissions.asJoinedText(", ")
         )
     }
 }

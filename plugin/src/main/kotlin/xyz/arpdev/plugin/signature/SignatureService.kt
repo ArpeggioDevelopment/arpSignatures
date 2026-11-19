@@ -11,7 +11,6 @@ import xyz.arpdev.plugin.signature.model.ValidationResult
 import xyz.arpdev.plugin.signature.validation.SignatureValidator
 import com.google.inject.Inject
 import com.google.inject.Singleton
-import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.time.LocalDateTime
@@ -46,7 +45,7 @@ class SignatureService @Inject constructor(
                             messages.notInRange,
                             "{MIN}" to restrictions.minCharacters.toString(),
                             "{MAX}" to restrictions.maxCharacters.toString(),
-                            "{SIGNATURE}" to MiniMessage.miniMessage().escapeTags(signature)
+                            "{SIGNATURE}" to signature
                         )
                     }
 
@@ -78,13 +77,11 @@ class SignatureService @Inject constructor(
         val component = formatter.format(player, signature, config.general)
         applier.apply(item, component)
 
-        val safeText = MiniMessage.miniMessage().escapeTags(signature.text)
-
         multification.notify(
             player,
             config.messages.messages.signed,
             "{DATE}" to signature.createdAt.format(config.general.dateFormatter),
-            "{SIGNATURE}" to safeText
+            "{SIGNATURE}" to signature.text
         )
     }
 }
