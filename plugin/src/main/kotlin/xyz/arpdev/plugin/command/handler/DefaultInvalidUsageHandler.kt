@@ -1,6 +1,6 @@
 package xyz.arpdev.plugin.command.handler
 
-import xyz.arpdev.plugin.config.MessagesConfig
+import xyz.arpdev.plugin.config.ConfigService
 import xyz.arpdev.plugin.multification.PaperMultification
 import com.google.inject.Inject
 import dev.rollczi.litecommands.handler.result.ResultHandlerChain
@@ -10,7 +10,7 @@ import dev.rollczi.litecommands.invocation.Invocation
 import org.bukkit.command.CommandSender
 
 class DefaultInvalidUsageHandler @Inject constructor(
-    private val messagesConfig: MessagesConfig,
+    private val configService: ConfigService,
     private val multification: PaperMultification
 ) : InvalidUsageHandler<CommandSender> {
 
@@ -24,7 +24,7 @@ class DefaultInvalidUsageHandler @Inject constructor(
 
         multification.notify(
             sender,
-            messagesConfig.messages.invalidUsage,
+            configService.current.messages.messages.invalidUsage,
             "{USAGE}" to schematic.first()
         )
     }

@@ -1,5 +1,6 @@
 package xyz.arpdev.plugin.multification
 
+import xyz.arpdev.plugin.config.ConfigService
 import xyz.arpdev.plugin.config.MessagesConfig
 import com.eternalcode.multification.adventure.AudienceConverter
 import com.eternalcode.multification.notice.Notice
@@ -12,10 +13,10 @@ import org.bukkit.command.CommandSender
 
 @Singleton
 class PaperMultification @Inject constructor(
-    private val generalConfig: MessagesConfig
+    private val configService: ConfigService
 ) : PaperMultification<MessagesConfig>() {
 
-    override fun translationProvider() = TranslationProvider<MessagesConfig> { generalConfig }
+    override fun translationProvider() = TranslationProvider<MessagesConfig> { configService.current.messages }
 
     override fun serializer() = MiniMessage.miniMessage()
 

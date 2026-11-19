@@ -7,7 +7,6 @@ import java.time.LocalDateTime
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
-import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class GeneralConfigLoaderTest {
@@ -57,15 +56,15 @@ class GeneralConfigLoaderTest {
     }
 
     @Test
-    fun `prepares regexes and date formatter again after reload`() {
+    fun `prepares regexes and date formatter for each load`() {
         val file = folder.newFile()
         file.writeText("restrictions:\n  signatureFilter:\n    regexes: ['(?i)blocked']")
-        val config = loader.load(file)
+        var config = loader.load(file)
         val previousRegex = config.restrictions.signatureFilter.compiledRegexes.single()
         assertTrue(previousRegex.containsMatchIn("BLOCKED text"))
 
         file.writeText("dateFormat: 'yyyy'\nrestrictions:\n  signatureFilter:\n    regexes: ['^allowed$']")
-        loader.reload(config)
+        config = loader.load(file)
 
         val regex = config.restrictions.signatureFilter.compiledRegexes.single()
         assertTrue(regex.matches("allowed"))
@@ -73,29 +72,7 @@ class GeneralConfigLoaderTest {
         assertEquals("2026", LocalDateTime.of(2026, 11, 19, 12, 34).format(config.dateFormatter))
 
         file.writeText("restrictions:\n  signatureFilter:\n    regexes: []")
-        loader.reload(config)
+        config = loader.load(file)
         assertTrue(config.restrictions.signatureFilter.compiledRegexes.isEmpty())
-    }
-
-    @Test
-    fun `keeps active settings when reload fails validation or parsing`() {
-        val file = folder.root.resolve("general.yml")
-        val config = loader.load(file)
-        val restrictions = config.restrictions
-        val permissions = config.permissions
-        val formatter = config.dateFormatter
-
-        for (yaml in listOf(
-            "dateFormat: 'yyyy'\nrestrictions:\n  signatureFilter:\n    regexes: ['[']",
-            "dateFormat: ["
-        )) {
-            file.writeText(yaml)
-            assertFailsWith<Exception> { loader.reload(config) }
-
-            assertEquals("HH:mm:ss dd.MM.yyyy", config.dateFormat)
-            assertSame(restrictions, config.restrictions)
-            assertSame(permissions, config.permissions)
-            assertSame(formatter, config.dateFormatter)
-        }
     }
 }

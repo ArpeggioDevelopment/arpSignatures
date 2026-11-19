@@ -1,8 +1,6 @@
 package xyz.arpdev.plugin.command.commands
 
-import xyz.arpdev.plugin.config.GeneralConfig
-import xyz.arpdev.plugin.config.GeneralConfigLoader
-import xyz.arpdev.plugin.config.MessagesConfig
+import xyz.arpdev.plugin.config.ConfigService
 import xyz.arpdev.plugin.multification.PaperMultification
 import com.google.inject.Inject
 import dev.rollczi.litecommands.annotations.command.Command
@@ -11,15 +9,14 @@ import dev.rollczi.litecommands.annotations.execute.Execute
 import dev.rollczi.litecommands.annotations.permission.Permission
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
-import kotlin.system.measureTimeMillis
+import java.util.logging.Level
+import kotlin.time.measureTimedValue
 
 @Command(name = "arpsignatures")
 @Permission("arpsignatures.reload")
 class ReloadCommand @Inject constructor(
     private val plugin: JavaPlugin,
-    private val generalConfig: GeneralConfig,
-    private val generalConfigLoader: GeneralConfigLoader,
-    private val messagesConfig: MessagesConfig,
+    private val configService: ConfigService,
     private val paperMultification: PaperMultification
 ) {
 
@@ -27,17 +24,19 @@ class ReloadCommand @Inject constructor(
     fun reload(
         @Context sender: CommandSender
     ) {
-        paperMultification.notify(sender, messagesConfig.messages.reloading)
-        try {
-            val time = measureTimeMillis {
-                generalConfigLoader.reload(generalConfig)
-                messagesConfig.load()
-            }
+        val previous = configService.current
+        paperMultification.notify(sender, previous.messages.messages.reloading)
 
-            paperMultification.notify(sender, messagesConfig.messages.reloaded, "{TIME}" to time.toString())
+        val (loaded, time) = try {
+            measureTimedValue {
+                configService.reload()
+            }
         } catch (e: Exception) {
-            paperMultification.notify(sender, messagesConfig.messages.reloadError)
-            plugin.logger.severe(e.message)
+            plugin.logger.log(Level.SEVERE, "Failed to reload configuration. Previous settings remain active.", e)
+            paperMultification.notify(sender, previous.messages.messages.reloadError)
+            return
         }
+
+        paperMultification.notify(sender, loaded.messages.messages.reloaded, "{TIME}" to time.inWholeMilliseconds.toString())
     }
 }

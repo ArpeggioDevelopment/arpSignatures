@@ -1,7 +1,7 @@
 package xyz.arpdev.plugin.signature
 
-import xyz.arpdev.plugin.config.GeneralConfig
-import xyz.arpdev.plugin.config.MessagesConfig
+import xyz.arpdev.plugin.config.ConfigService
+import xyz.arpdev.plugin.config.ConfigSnapshot
 import xyz.arpdev.plugin.multification.PaperMultification
 import xyz.arpdev.plugin.signature.format.SignatureFormatter
 import xyz.arpdev.plugin.signature.item.SignatureApplier
@@ -18,39 +18,41 @@ import java.time.LocalDateTime
 
 @Singleton
 class SignatureService @Inject constructor(
-    private val generalConfig: GeneralConfig,
-    private val messagesConfig: MessagesConfig,
+    private val configService: ConfigService,
     private val validator: SignatureValidator,
     private val formatter: SignatureFormatter,
     private val applier: SignatureApplier,
     private val multification: PaperMultification
 ) {
 
-    fun validate(
+    private fun validate(
         player: Player,
         item: ItemStack,
-        signature: String
+        signature: String,
+        config: ConfigSnapshot
     ): Boolean {
-        when (val result = validator.validate(item, signature)) {
+        val messages = config.messages.messages
+
+        when (val result = validator.validate(item, signature, config.general)) {
             ValidationResult.Success -> return true
 
             is ValidationResult.Failure -> {
                 when (result.reason) {
                     FailureReason.INVALID_LENGTH -> {
-                        val restrictions = generalConfig.restrictions
+                        val restrictions = config.general.restrictions
 
                         multification.notify(
                             player,
-                            messagesConfig.messages.notInRange,
+                            messages.notInRange,
                             "{MIN}" to restrictions.minCharacters.toString(),
                             "{MAX}" to restrictions.maxCharacters.toString(),
                             "{SIGNATURE}" to MiniMessage.miniMessage().escapeTags(signature)
                         )
                     }
 
-                    FailureReason.NO_ITEM -> multification.notify(player, messagesConfig.messages.noItem)
-                    FailureReason.BLACKLISTED_ITEM -> multification.notify(player, messagesConfig.messages.blacklistedItem)
-                    FailureReason.INVALID_SIGNATURE -> multification.notify(player, messagesConfig.messages.invalidSignature)
+                    FailureReason.NO_ITEM -> multification.notify(player, messages.noItem)
+                    FailureReason.BLACKLISTED_ITEM -> multification.notify(player, messages.blacklistedItem)
+                    FailureReason.INVALID_SIGNATURE -> multification.notify(player, messages.invalidSignature)
                 }
 
                 return false
@@ -63,20 +65,25 @@ class SignatureService @Inject constructor(
         item: ItemStack,
         text: String
     ) {
+        val config = configService.current
+        if (!validate(player, item, text, config)) {
+            return
+        }
+
         val signature = Signature(
             text = text,
             author = player.name,
             createdAt = LocalDateTime.now()
         )
-        val component = formatter.format(player, signature)
+        val component = formatter.format(player, signature, config.general)
         applier.apply(item, component)
 
         val safeText = MiniMessage.miniMessage().escapeTags(signature.text)
 
         multification.notify(
             player,
-            messagesConfig.messages.signed,
-            "{DATE}" to signature.createdAt.format(generalConfig.dateFormatter),
+            config.messages.messages.signed,
+            "{DATE}" to signature.createdAt.format(config.general.dateFormatter),
             "{SIGNATURE}" to safeText
         )
     }

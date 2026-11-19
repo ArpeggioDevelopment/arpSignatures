@@ -22,10 +22,6 @@ class SignCommand @Inject constructor(
     ) {
         val item = sender.inventory.itemInMainHand
 
-        if (!signatureService.validate(sender, item, text)) {
-            return
-        }
-
         signatureService.sign(sender, item, text)
     }
 }

@@ -1,6 +1,6 @@
 package xyz.arpdev.plugin.command.handler
 
-import xyz.arpdev.plugin.config.MessagesConfig
+import xyz.arpdev.plugin.config.ConfigService
 import xyz.arpdev.plugin.multification.PaperMultification
 import com.google.inject.Inject
 import dev.rollczi.litecommands.handler.result.ResultHandlerChain
@@ -11,7 +11,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 class DefaultMissingPermissionHandler @Inject constructor(
-    private val messagesConfig: MessagesConfig,
+    private val configService: ConfigService,
     private val multification: PaperMultification
 ) : MissingPermissionsHandler<CommandSender> {
 
@@ -25,7 +25,7 @@ class DefaultMissingPermissionHandler @Inject constructor(
 
         multification.notify(
             sender,
-            messagesConfig.messages.noPermission,
+            configService.current.messages.messages.noPermission,
             "{PERMISSIONS}" to (missingPermissions?.asJoinedText(", ") ?: "")
         )
     }

@@ -12,12 +12,11 @@ import org.bukkit.entity.Player
 
 @Singleton
 class SignatureFormatter @Inject constructor(
-    private val generalConfig: GeneralConfig,
     private val formatResolver: SignatureFormatResolver
 ) {
-    fun format(player: Player, signature: Signature): Component {
-        val format = formatResolver.resolve(player)
-        val date = signature.createdAt.format(generalConfig.dateFormatter)
+    fun format(player: Player, signature: Signature, config: GeneralConfig): Component {
+        val format = formatResolver.resolve(player, config)
+        val date = signature.createdAt.format(config.dateFormatter)
 
         return MiniMessage.miniMessage().deserialize(
             format,

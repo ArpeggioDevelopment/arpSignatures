@@ -27,15 +27,6 @@ class GeneralConfigLoader {
         return config
     }
 
-    fun reload(config: GeneralConfig) {
-        val loaded = load(config.bindFile.toFile())
-
-        config.dateFormat = loaded.dateFormat
-        config.dateFormatter = loaded.dateFormatter
-        config.restrictions = loaded.restrictions
-        config.permissions = loaded.permissions
-    }
-
     private fun validate(config: GeneralConfig) {
         val restrictions = config.restrictions
         require(restrictions.minCharacters > 0) {
