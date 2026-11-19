@@ -1,3 +1,6 @@
+import com.github.jengelman.gradle.plugins.shadow.transformers.KotlinModuleMetadataTransformer
+import com.github.jengelman.gradle.plugins.shadow.transformers.PreserveFirstFoundResourceTransformer
+
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.shadow)
@@ -39,6 +42,8 @@ kotlin {
 tasks {
     shadowJar {
         archiveFileName.set("arpSignatures-v${project.version}.jar")
+        duplicatesStrategy = DuplicatesStrategy.INCLUDE
+        failOnDuplicateEntries = true
 
         val relocatePrefix = "xyz.arpdev.plugin.libs"
 
@@ -48,6 +53,10 @@ tasks {
         relocate("com.eternalcode.multification", "$relocatePrefix.multification")
 
         mergeServiceFiles()
+        transform<KotlinModuleMetadataTransformer>()
+        transform<PreserveFirstFoundResourceTransformer> {
+            include("**")
+        }
     }
     processResources {
         val props = mapOf(
