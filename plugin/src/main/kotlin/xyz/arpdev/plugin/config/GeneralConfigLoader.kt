@@ -1,0 +1,71 @@
+package xyz.arpdev.plugin.config
+
+import com.google.inject.Singleton
+import eu.okaeri.configs.ConfigManager
+import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer
+import java.io.File
+import java.time.DateTimeException
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.regex.PatternSyntaxException
+
+@Singleton
+class GeneralConfigLoader {
+
+    fun load(file: File): GeneralConfig {
+        val config = ConfigManager.create(GeneralConfig::class.java) { init ->
+            init.configure { conf ->
+                conf.configurer(YamlBukkitConfigurer())
+                conf.bindFile(file)
+                conf.removeOrphans(true)
+            }
+            init.saveDefaults()
+            init.load()
+        }
+
+        validate(config)
+        return config
+    }
+
+    fun reload(config: GeneralConfig) {
+        val loaded = load(config.bindFile.toFile())
+
+        config.dateFormat = loaded.dateFormat
+        config.dateFormatter = loaded.dateFormatter
+        config.restrictions = loaded.restrictions
+        config.permissions = loaded.permissions
+    }
+
+    private fun validate(config: GeneralConfig) {
+        val restrictions = config.restrictions
+        require(restrictions.minCharacters > 0) {
+            "restrictions.minCharacters must be greater than zero."
+        }
+        require(restrictions.maxCharacters >= restrictions.minCharacters) {
+            "restrictions.maxCharacters must be greater than or equal to restrictions.minCharacters."
+        }
+
+        require(!config.permissions.formats["default"].isNullOrBlank()) {
+            "permissions.formats must contain a non-blank 'default' format."
+        }
+
+        require(config.dateFormat.isNotBlank()) { "dateFormat must not be blank." }
+        config.dateFormatter = try {
+            DateTimeFormatter.ofPattern(config.dateFormat).also { formatter ->
+                LocalDateTime.now().format(formatter)
+            }
+        } catch (exception: IllegalArgumentException) {
+            throw IllegalArgumentException("Invalid dateFormat '${config.dateFormat}'.", exception)
+        } catch (exception: DateTimeException) {
+            throw IllegalArgumentException("dateFormat must support a local date and time: '${config.dateFormat}'.", exception)
+        }
+
+        restrictions.signatureFilter.compiledRegexes = restrictions.signatureFilter.regexes.mapIndexed { index, pattern ->
+            try {
+                Regex(pattern)
+            } catch (exception: PatternSyntaxException) {
+                throw IllegalArgumentException("Invalid restrictions.signatureFilter.regexes[$index]: '$pattern'.", exception)
+            }
+        }
+    }
+}

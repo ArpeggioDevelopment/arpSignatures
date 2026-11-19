@@ -1,6 +1,7 @@
 package xyz.arpdev.plugin.command.commands
 
 import xyz.arpdev.plugin.config.GeneralConfig
+import xyz.arpdev.plugin.config.GeneralConfigLoader
 import xyz.arpdev.plugin.config.MessagesConfig
 import xyz.arpdev.plugin.multification.PaperMultification
 import com.google.inject.Inject
@@ -17,6 +18,7 @@ import kotlin.system.measureTimeMillis
 class ReloadCommand @Inject constructor(
     private val plugin: JavaPlugin,
     private val generalConfig: GeneralConfig,
+    private val generalConfigLoader: GeneralConfigLoader,
     private val messagesConfig: MessagesConfig,
     private val paperMultification: PaperMultification
 ) {
@@ -28,7 +30,7 @@ class ReloadCommand @Inject constructor(
         paperMultification.notify(sender, messagesConfig.messages.reloading)
         try {
             val time = measureTimeMillis {
-                generalConfig.load()
+                generalConfigLoader.reload(generalConfig)
                 messagesConfig.load()
             }
 

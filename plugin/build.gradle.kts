@@ -27,6 +27,9 @@ dependencies {
 
     implementation(libs.multification.paper)
     implementation(libs.multification.okaeri)
+
+    testImplementation(kotlin("test-junit"))
+    testImplementation(libs.paper.api)
 }
 
 kotlin {

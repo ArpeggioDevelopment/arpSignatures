@@ -2,9 +2,15 @@ package xyz.arpdev.plugin.config
 
 import eu.okaeri.configs.OkaeriConfig
 import eu.okaeri.configs.annotation.Comment
+import eu.okaeri.configs.annotation.Exclude
+import java.time.format.DateTimeFormatter
 
 class GeneralConfig : OkaeriConfig() {
     var dateFormat = "HH:mm:ss dd.MM.yyyy"
+
+    @Exclude
+    var dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(dateFormat)
+        internal set
 
     var restrictions = Restrictions()
     var permissions = Permissions()
@@ -42,6 +48,10 @@ class GeneralConfig : OkaeriConfig() {
 
         var words: MutableList<String> = mutableListOf()
         var regexes: MutableList<String> = mutableListOf()
+
+        @Exclude
+        var compiledRegexes: List<Regex> = emptyList()
+            internal set
     }
 
     enum class FilterMode {

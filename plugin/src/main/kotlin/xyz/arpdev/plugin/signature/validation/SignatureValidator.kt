@@ -38,7 +38,7 @@ class SignatureValidator @Inject constructor(
     private fun isAllowedSignature(signature: String): Boolean {
         val filter = config.restrictions.signatureFilter
 
-        val matched = filter.words.any { signature.contains(it, true) } || filter.regexes.any { Regex(it).containsMatchIn(signature) }
+        val matched = filter.words.any { signature.contains(it, true) } || filter.compiledRegexes.any { it.containsMatchIn(signature) }
 
         return when (filter.mode) {
             GeneralConfig.FilterMode.BLACKLIST -> !matched

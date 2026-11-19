@@ -15,7 +15,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Singleton
 class SignatureService @Inject constructor(
@@ -77,7 +76,7 @@ class SignatureService @Inject constructor(
         multification.notify(
             player,
             messagesConfig.messages.signed,
-            "{DATE}" to signature.createdAt.format(DateTimeFormatter.ofPattern(generalConfig.dateFormat)),
+            "{DATE}" to signature.createdAt.format(generalConfig.dateFormatter),
             "{SIGNATURE}" to safeText
         )
     }

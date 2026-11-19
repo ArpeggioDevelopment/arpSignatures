@@ -9,7 +9,6 @@ import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder
 import org.bukkit.entity.Player
-import java.time.format.DateTimeFormatter
 
 @Singleton
 class SignatureFormatter @Inject constructor(
@@ -18,7 +17,7 @@ class SignatureFormatter @Inject constructor(
 ) {
     fun format(player: Player, signature: Signature): Component {
         val format = formatResolver.resolve(player)
-        val date = signature.createdAt.format(DateTimeFormatter.ofPattern(generalConfig.dateFormat))
+        val date = signature.createdAt.format(generalConfig.dateFormatter)
 
         return MiniMessage.miniMessage().deserialize(
             format,
