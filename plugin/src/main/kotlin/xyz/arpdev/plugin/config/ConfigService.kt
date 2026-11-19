@@ -1,9 +1,7 @@
 package xyz.arpdev.plugin.config
 
-import com.google.inject.Singleton
 import java.io.File
 
-@Singleton
 class ConfigService(
     private val dataFolder: File,
     private val generalConfigLoader: GeneralConfigLoader,

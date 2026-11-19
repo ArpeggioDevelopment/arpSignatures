@@ -1,6 +1,5 @@
 package xyz.arpdev.plugin.config
 
-import com.google.inject.Singleton
 import eu.okaeri.configs.ConfigManager
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer
 import java.io.File
@@ -9,7 +8,6 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.regex.PatternSyntaxException
 
-@Singleton
 class GeneralConfigLoader {
 
     fun load(file: File): GeneralConfig {
