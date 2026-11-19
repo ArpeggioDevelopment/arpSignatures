@@ -1,6 +1,6 @@
 # arpSignatures
 
-Plugin for Paper 1.21.1+ (and compatible forks) as well as Folia, that allows players to sign their items with custom text using a simple command. It features configurable signature formats, permission-based styles, placeholder support, customizable validation rules, and text filters, making it easy to adapt the signing system to your server.
+Plugin for Paper 26.1.2+ (and compatible forks) as well as Folia, that allows players to sign their items with custom text using a simple command. It features configurable signature formats, permission-based styles, placeholder support, customizable validation rules, and text filters, making it easy to adapt the signing system to your server.
 
 ## Download
 
@@ -17,11 +17,13 @@ That's it! Your players can now create custom signatures on supported items.
 
 ## Compatibility
 
-This plugin supports **Paper 1.21.1+** and compatible Paper forks. **Folia** is fully supported using the same plugin JAR - no separate build is required.
+This plugin requires **Java 25 or newer** and supports **Paper 26.1.2+** and compatible Paper forks. **Folia** is fully supported using the same plugin JAR - no separate build is required.
+
+Paper 26.1.2 is the minimum supported stable release from the [Paper versions requiring Java 25](https://docs.papermc.io/paper/getting-started/#requirements).
 
 ## Building
 
-Build the project using Gradle:
+Build the project using Gradle with **JDK 25**:
 
 ```bash
 ./gradlew build

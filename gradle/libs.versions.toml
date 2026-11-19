@@ -2,7 +2,7 @@
 kotlin = "2.4.0"
 shadow = "9.6.1"
 
-paper-api = "26.2.build.+"
+paper-api = "26.1.2.build.74-stable"
 litecommands = "3.10.9"
 okaeri-configs = "6.1.0-beta.4"
 multification = "1.2.4"
