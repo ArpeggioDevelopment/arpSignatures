@@ -3,6 +3,7 @@ package xyz.arpdev.plugin.config
 import eu.okaeri.configs.OkaeriConfig
 import eu.okaeri.configs.annotation.Comment
 import eu.okaeri.configs.annotation.Exclude
+import org.bukkit.Material
 import java.time.format.DateTimeFormatter
 
 class GeneralConfig : OkaeriConfig() {
@@ -41,6 +42,10 @@ class GeneralConfig : OkaeriConfig() {
         var materials = mutableListOf(
             "TRIPWIRE_HOOK"
         )
+
+        @Exclude
+        var resolvedMaterials: Set<Material> = emptySet()
+            internal set
     }
 
     class SignatureFilter : OkaeriConfig() {

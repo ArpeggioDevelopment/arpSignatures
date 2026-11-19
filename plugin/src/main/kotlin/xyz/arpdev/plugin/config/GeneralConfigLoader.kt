@@ -2,6 +2,7 @@ package xyz.arpdev.plugin.config
 
 import eu.okaeri.configs.ConfigManager
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer
+import org.bukkit.Material
 import java.io.File
 import java.time.DateTimeException
 import java.time.LocalDateTime
@@ -32,6 +33,15 @@ class GeneralConfigLoader {
         }
         require(restrictions.maxCharacters >= restrictions.minCharacters) {
             "restrictions.maxCharacters must be greater than or equal to restrictions.minCharacters."
+        }
+
+        val itemFilter = restrictions.itemFilter
+        itemFilter.resolvedMaterials = buildSet {
+            itemFilter.materials.forEachIndexed { index, name ->
+                add(requireNotNull(Material.getMaterial(name)) {
+                    "Unknown material '$name' in restrictions.itemFilter.materials[$index]."
+                })
+            }
         }
 
         require(!config.permissions.formats["default"].isNullOrBlank()) {

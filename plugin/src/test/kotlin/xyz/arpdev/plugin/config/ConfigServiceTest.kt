@@ -1,6 +1,7 @@
 package xyz.arpdev.plugin.config
 
 import com.eternalcode.multification.notice.resolver.text.TextContent
+import org.bukkit.Material
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -26,7 +27,7 @@ class ConfigServiceTest {
         val previous = service.current
         val previousText = signedText(previous)
 
-        generalFile().writeText("dateFormat: 'yyyy'\nrestrictions:\n  signatureFilter:\n    regexes: ['^allowed$']")
+        generalFile().writeText("dateFormat: 'yyyy'\nrestrictions:\n  itemFilter:\n    materials: ['STONE']\n  signatureFilter:\n    regexes: ['^allowed$']")
         writeMessages("updated")
         val loaded = service.reload()
 
@@ -35,9 +36,11 @@ class ConfigServiceTest {
         assertNotSame(previous.messages, loaded.messages)
         assertEquals("updated", signedText(loaded))
         assertTrue(loaded.general.restrictions.signatureFilter.compiledRegexes.single().matches("allowed"))
+        assertEquals(setOf(Material.STONE), loaded.general.restrictions.itemFilter.resolvedMaterials)
         assertEquals("2026", LocalDateTime.of(2026, 11, 19, 12, 34).format(loaded.general.dateFormatter))
         assertEquals("HH:mm:ss dd.MM.yyyy", previous.general.dateFormat)
         assertTrue(previous.general.restrictions.signatureFilter.compiledRegexes.isEmpty())
+        assertEquals(setOf(Material.TRIPWIRE_HOOK), previous.general.restrictions.itemFilter.resolvedMaterials)
         assertEquals(previousText, signedText(previous))
     }
 
@@ -67,7 +70,8 @@ class ConfigServiceTest {
 
         for (yaml in listOf(
             "dateFormat: [",
-            "dateFormat: 'yyyy'\nrestrictions:\n  signatureFilter:\n    regexes: ['[']"
+            "dateFormat: 'yyyy'\nrestrictions:\n  signatureFilter:\n    regexes: ['[']",
+            "restrictions:\n  itemFilter:\n    materials: ['DIAMOND_SOWRD']"
         )) {
             generalFile().writeText(yaml)
             assertFailsWith<Exception> { service.reload() }

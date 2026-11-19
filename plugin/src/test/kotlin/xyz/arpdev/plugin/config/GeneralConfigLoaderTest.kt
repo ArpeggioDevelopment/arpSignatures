@@ -1,5 +1,6 @@
 package xyz.arpdev.plugin.config
 
+import org.bukkit.Material
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TemporaryFolder
@@ -23,16 +24,20 @@ class GeneralConfigLoaderTest {
 
         assertEquals("default", config.permissions.formats.keys.first())
         assertTrue(config.restrictions.signatureFilter.compiledRegexes.isEmpty())
+        assertEquals(setOf(Material.TRIPWIRE_HOOK), config.restrictions.itemFilter.resolvedMaterials)
         assertEquals("12:34:56 19.11.2026", LocalDateTime.of(2026, 11, 19, 12, 34, 56).format(config.dateFormatter))
 
         config.save()
         assertFalse(file.readText().contains("dateFormatter"))
         assertFalse(file.readText().contains("compiledRegexes"))
+        assertFalse(file.readText().contains("resolvedMaterials"))
     }
 
     @Test
     fun `rejects invalid configuration with the setting name`() {
         val invalidSettings = listOf(
+            "restrictions:\n  itemFilter:\n    materials: ['DIAMOND_SOWRD']" to "restrictions.itemFilter.materials[0]",
+            "restrictions:\n  itemFilter:\n    materials: ['STONE', '']" to "restrictions.itemFilter.materials[1]",
             "restrictions:\n  signatureFilter:\n    regexes: ['[']" to "restrictions.signatureFilter.regexes[0]",
             "dateFormat: 'invalid-pattern'" to "dateFormat",
             "dateFormat: 'yyyy-MM-dd XXX'" to "dateFormat",
@@ -53,6 +58,18 @@ class GeneralConfigLoaderTest {
             }
             assertTrue(exception.message.orEmpty().contains(setting), exception.message)
         }
+    }
+
+    @Test
+    fun `resolves materials without duplicates and supports an empty filter`() {
+        val file = folder.newFile()
+        file.writeText("restrictions:\n  itemFilter:\n    materials: ['STONE', 'DIAMOND_SWORD', 'STONE']")
+
+        val config = loader.load(file)
+        assertEquals(setOf(Material.STONE, Material.DIAMOND_SWORD), config.restrictions.itemFilter.resolvedMaterials)
+
+        file.writeText("restrictions:\n  itemFilter:\n    materials: []")
+        assertTrue(loader.load(file).restrictions.itemFilter.resolvedMaterials.isEmpty())
     }
 
     @Test

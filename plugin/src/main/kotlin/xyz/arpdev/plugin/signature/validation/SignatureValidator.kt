@@ -25,8 +25,8 @@ class SignatureValidator {
 
     private fun isAllowedItem(item: ItemStack, filter: GeneralConfig.ItemFilter): Boolean {
         return when (filter.mode) {
-            GeneralConfig.FilterMode.BLACKLIST -> item.type.name !in filter.materials
-            GeneralConfig.FilterMode.WHITELIST -> item.type.name in filter.materials
+            GeneralConfig.FilterMode.BLACKLIST -> item.type !in filter.resolvedMaterials
+            GeneralConfig.FilterMode.WHITELIST -> item.type in filter.resolvedMaterials
         }
     }
 
