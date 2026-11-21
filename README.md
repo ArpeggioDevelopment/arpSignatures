@@ -33,4 +33,4 @@ The build generates two JAR files in the `plugin/build/libs` directory. The shad
 
 ## Support
 
-If you encounter any issues or have suggestions, please join our Discord server and create a post in the `#issues` channel. [Click to join.](https://discord.gg/UYvVRgSJFX)
+If you encounter any issues or have suggestions, please join our Discord server and create a post in the `#issues` channel. [Click to join.](https://discord.gg/uU9XG3p6xF)
